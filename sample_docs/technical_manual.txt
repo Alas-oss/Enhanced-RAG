@@ -1,0 +1,54 @@
+# Widget API Reference
+
+## Installation
+
+Install the package via pip:
+
+```
+pip install widget-sdk
+```
+
+Configuration requires setting an API key as an environment variable before first use.
+
+## Authentication
+
+### function authenticate(api_key)
+
+Parameters:
+- api_key: str, your account's secret key
+
+Returns:
+- A Session object used for subsequent calls.
+
+```python
+from widget_sdk import authenticate
+
+session = authenticate(api_key="sk-xxxx")
+```
+
+## Creating a Widget
+
+### function create_widget(session, name, config)
+
+Step 1: Obtain a valid Session via authenticate().
+Step 2: Build a config dictionary describing the widget's properties.
+Step 3: Call create_widget with the session, a name, and the config.
+
+```python
+widget = session.create_widget(
+    name="dashboard-panel",
+    config={"color": "blue", "size": "large"}
+)
+```
+
+Parameters:
+- session: Session, an authenticated session object
+- name: str, unique identifier for the widget
+- config: dict, widget configuration options
+
+Returns:
+- A Widget object with an `id` field.
+
+## Error Handling
+
+The API raises `WidgetError` on failure. Common causes include invalid configuration and expired sessions. Always wrap create_widget calls in a try/except block in production code.

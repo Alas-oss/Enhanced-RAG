@@ -1,0 +1,38 @@
+SOFTWARE LICENSE AGREEMENT
+
+THIS AGREEMENT is made and entered into as of January 1, 2026, by and between Acme Corp, a Delaware corporation (hereinafter "Licensor"), and Beta Industries LLC (hereinafter "Licensee").
+
+WHEREAS, Licensor owns certain proprietary software; and
+WHEREAS, Licensee desires to obtain a license to use such software under the terms set forth herein;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the Parties agree as follows:
+
+ARTICLE I DEFINITIONS
+
+Section 1.1 "Software" means the object code version of Licensor's proprietary application, including all updates provided under this Agreement.
+
+Section 1.2 "Effective Date" means the date first written above.
+
+ARTICLE II GRANT OF LICENSE
+
+Section 2.1 Subject to the terms and conditions of this Agreement, Licensor hereby grants to Licensee a non-exclusive, non-transferable license to use the Software solely for Licensee's internal business purposes.
+
+Section 2.2 Licensee shall not sublicense, distribute, or make the Software available to any third party without the prior written consent of Licensor.
+
+ARTICLE III INDEMNIFICATION
+
+Section 3.1 Licensor shall indemnify, defend, and hold harmless Licensee from and against any and all claims, damages, liabilities, costs, and expenses arising out of any third-party claim that the Software infringes any valid patent, copyright, or trade secret, provided that Licensee gives Licensor prompt written notice of such claim.
+
+Section 3.2 Notwithstanding the foregoing, Licensor shall have no obligation to indemnify Licensee to the extent that a claim arises from Licensee's modification of the Software or use of the Software in combination with products not supplied by Licensor.
+
+ARTICLE IV LIMITATION OF LIABILITY
+
+Section 4.1 IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THIS AGREEMENT, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+Section 4.2 Licensor's total cumulative liability under this Agreement shall not exceed the total fees paid by Licensee in the twelve (12) months preceding the claim.
+
+ARTICLE V GOVERNING LAW
+
+Section 5.1 This Agreement shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of laws principles.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
