@@ -3,7 +3,19 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+try:
+    import tiktoken
+    _ENCODING = tiktoken.get_encoding("cl100k_base")
+except Exception:
+    _ENCODING = None
+
 def estimate_tokens(text: str) -> int:
+    if _ENCODING is not None:
+        try:
+            return max(1, len(_ENCODING.encode(text)))
+        except Exception:
+            pass
+        
     words = len(text.split())
     return max(1, int(words * 1.3))
 
