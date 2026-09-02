@@ -1,0 +1,27 @@
+# Q3 2026 Financial Summary
+
+## Revenue Overview
+
+Total revenue for the fiscal quarter grew year-over-year, driven primarily by strong performance in the enterprise segment. Management attributes the increase to expanded contract renewals and new customer acquisition in international markets.
+
+| Metric | Q3 2026 | Q3 2025 |
+| --- | --- | --- |
+| Total Revenue | $412.6 million | $358.2 million |
+| Gross Margin | 71.3% | 68.9% |
+| Operating Expenses | $198.4 million | $181.7 million |
+| Net Income | $87.1 million | $61.4 million |
+
+Cash flow from operations remained healthy, supporting continued investment in product development without additional financing.
+
+## Balance Sheet Highlights
+
+The balance sheet reflects a stronger cash position compared to the prior fiscal year, with shareholders' equity increasing as a result of retained earnings growth.
+
+| Metric | Q3 2026 | Q3 2025 |
+| --- | --- | --- |
+| Cash and Equivalents | $520.0 million | $410.3 million |
+| Total Assets | $1.42 billion | $1.19 billion |
+| Total Liabilities | $604.0 million | $557.6 million |
+| Shareholders' Equity | $816.0 million | $632.4 million |
+
+Management expects continued growth in fiscal Q4, contingent on macroeconomic conditions and continued demand in core markets.

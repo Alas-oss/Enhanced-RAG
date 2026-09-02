@@ -1,0 +1,58 @@
+TITLE 47 -- TELECOMMUNICATIONS
+
+PART 64 -- MISCELLANEOUS RULES RELATING TO COMMON CARRIERS
+
+Subpart U -- API Reporting Requirements for Regulated Carriers
+
+§ 64.5001 Scope and purpose.
+
+This subpart establishes requirements for common carriers to report network outage data electronically to the Commission via an automated interface, pursuant to 47 U.S.C. § 251. The Secretary shall promulgate technical specifications for such reporting, effective date to be determined by subsequent rulemaking published in the Federal Register.
+
+§ 64.5002 Reporting obligations.
+
+(a) Each carrier subject to this subpart shall submit outage reports through the interface described in Appendix A of this subpart within seventy-two (72) hours of a qualifying outage event.
+
+(b) Failure to comply with the reporting obligations of this section may result in penalties pursuant to 47 U.S.C. § 503.
+
+APPENDIX A -- TECHNICAL REPORTING INTERFACE
+
+# Outage Reporting API Reference
+
+## Authentication
+
+All requests to the outage reporting endpoint require an authenticated session token.
+
+### function authenticate(carrier_id, api_key)
+
+Parameters:
+- carrier_id: str, the carrier's FCC-assigned identifier
+- api_key: str, the carrier's registered API credential
+
+Returns:
+- A Session object valid for 24 hours.
+
+```python
+from outage_api import authenticate
+
+session = authenticate(carrier_id="FCC-00219", api_key="sk-xxxx")
+```
+
+## Submitting a Report
+
+### function submit_outage_report(session, report)
+
+Step 1: Obtain a valid Session via authenticate().
+Step 2: Build a report dictionary containing outage start time, affected area, and estimated customers impacted.
+Step 3: Call submit_outage_report with the session and the report.
+
+```python
+report = {
+    "start_time": "2026-08-14T03:22:00Z",
+    "affected_area": "Cook County, IL",
+    "customers_impacted": 14200,
+}
+session.submit_outage_report(report)
+```
+
+Returns:
+- A confirmation object with a `report_id` field, which must be retained for compliance recordkeeping under Section 64.5002(a).
