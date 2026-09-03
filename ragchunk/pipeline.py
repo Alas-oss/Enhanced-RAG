@@ -18,15 +18,16 @@ class AdaptiveChunkingPipeline:
         self,
         llm_classify_fn: Optional[Callable[[str], str]] = None,
         router: Optional[ChunkerRouter] = None,
-        narratve_embed_fn: Optional[Callable[[List[str]], List[List[float]]]] = None,
+        narrative_embed_fn: Optional[Callable[[List[str]], List[List[float]]]] = None,
     ):
         self.classifier = HybridClassifier(llm_classify_fn=llm_classify_fn)
-        self.router = router or ChunkerRouter(narratve_embed_fn=narratve_embed_fn)
+        self.router = router or ChunkerRouter(narrative_embed_fn=narrative_embed_fn)
 
     def process_text(self, text: str, doc_id: Optional[str] = None, source_path: Optional[str] = None) -> PipelineResult:
         doc_id = doc_id or str(uuid.uuid4())
         clean_text = normalize_whitespace(text)
-        #document = Document(doc_id=doc_id, text=clean_text, source_path=source_path)
+
+        raw_sections = split_into_sections(clean_text)
         
         if len(raw_sections) <= 1:
             return self._classify_and_chunk_single(clean_text, doc_id, source_path)
@@ -35,24 +36,13 @@ class AdaptiveChunkingPipeline:
             (label, sec_text, self.classifier.classify(sec_text))
             for label, sec_text in raw_sections
         ]
-        groups = self._merge_consecutive_by_types(section_results)
+        groups = self._merge_consecutive_by_type(section_results)
 
         if len(groups) == 1:
             _, group_text, group_classification = groups[0]
             return self._chunk_with_classificaiton(group_text, group_classification, doc_id, source_path)
 
         return self._chunk_mixed_groups(groups, doc_id, source_path)
-
-        # classification = self.classifier.classify(clean_text)
-        # chunker = self.router.get_chunker(classification.doc_type)
-        # chunks = chunker.chunk(document)
-
-        # return PipelineResult(
-        #     doc_id=doc_id,
-        #     doc_type=classification.doc_type,
-        #     classification=classification,
-        #     chunks=chunks,
-        # )
 
     def process_file(self, path: str) -> PipelineResult:
         text = load_document(path)
@@ -76,7 +66,7 @@ class AdaptiveChunkingPipeline:
         chunker = self.router.get_chunker(classification.doc_type)
         chunks = chunker.chunk(document)
         return PipelineResult(
-            doc_type=doc_id,
+            doc_id=doc_id,
             doc_type=classification.doc_type,
             classification=classification,
             chunks=chunks,

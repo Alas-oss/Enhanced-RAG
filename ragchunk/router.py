@@ -5,7 +5,7 @@ from typing import Callable, Dict, List, Optional
 from .chunkers import (
     BaseChunker,
     DefaultChunker,
-    FinancialChunker,
+    FinancialReportChunker,
     GovernmentRegulationChunker,
     LegalContractChunker,
     NarrativeProseChunker,
@@ -23,7 +23,7 @@ class ChunkerRouter:
             DocType.TECHNICAL_MANUAL: TechnicalManualChunker(max_tokens=500, overlap_tokens=50),
             DocType.NARRATIVE_PROSE: NarrativeProseChunker(
                 max_tokens=600, overlap_tokens=60, embed_fn=narrative_embed_fn),
-            DocType.FINANCIAL_REPORT: FinancialChunker(max_tokens=400, overlap_tokens=50),
+            DocType.FINANCIAL_REPORT: FinancialReportChunker(max_tokens=400, overlap_tokens=50),
             DocType.DEFAULT: DefaultChunker(max_tokens=500, overlap_tokens=50),
         }
         if overrides:
