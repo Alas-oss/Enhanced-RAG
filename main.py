@@ -5,6 +5,7 @@ import json
 import sys
 
 from ragchunk.pipeline import AdaptiveChunkingPipeline
+from ragchunk.embeddings import build_gemini_embed_fn
 
 def build_llm_classify_fn():
     try:
@@ -35,7 +36,20 @@ def main():
         help="Enable LLM fallback classification for ambiguous documents "
         "(required `pip install gemini` and GEMINI_API_KEY set)",
     )
+    parser.add_argument(
+        "--embed",
+        action="store_true",
+        help="Enable LLM fallback classification for ambiguous documents " \
+        "(requires `pip install google-genai` and GOOGLE_API_KEY set)",
+    )
+    parser.adD_argument(
+        "--cache-dir",
+        default=None,
+        help="Enable content-hash result caching in this directory -- unchanged " \
+        "documents are served from cache instead of being re-classified/re-chunked",
+    )
     args = parser.parse_args()
+
     llm_fn = build_llm_classify_fn() if args.use_llm else None
     if args.use_llm and llm_fn is None:
         print(
@@ -45,7 +59,21 @@ def main():
             file=sys.stderr,
         )
 
-    pipeline = AdaptiveChunkingPipeline(llm_classify_fn=llm_fn)
+    narrative_embed_fn = build_gemini_embed_fn() if args.embed else None
+    if args.embed and narrative_embed_fn is None:
+        print(
+            "[wanr] -- embed was set but the Gmini client could not be " \
+            "initialized (missing package or API key). Continuing with " \
+            "plain paragraph-packing for narrative_prose documents.",
+            file=sys.stderr,
+        )
+
+    pipeline = AdaptiveChunkingPipeline(llm_classify_fn=llm_fn, narrative_embed_fn=narrative_embed_fn)
+
+    if args.cache_dir:
+        from ragchunk.cache import CachedPipeline, FileResultCache
+
+        pipeline = CachedPipeline(pipeline, FileResultCache(args.cache_dir))
 
     if args.dir:
         results = pipeline.process_directory(args.path, pattern=args.pattern)
