@@ -4,25 +4,9 @@ import argparse
 import json
 import sys
 
-from ragchunk.pipeline import AdaptiveChunkingPipeline
+from ragchunk import AdaptiveChunkingPipeline
 from ragchunk.embeddings import build_gemini_embed_fn
-
-def build_llm_classify_fn():
-    try:
-        from google import genai
-
-        client = genai.Client()
-
-        def classify_fn(prompt: str) -> str:
-            resp = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-            )
-            return resp.text.strip()
-
-        return classify_fn
-    except Exception:
-        return None
+from ragchunk.llm import build_gemini_classify_fn
 
 def main():
     parser = argparse.ArgumentParser(description="Adaptive RAG chunking pipeline")
@@ -34,27 +18,28 @@ def main():
         "--use-llm",
         action="store_true",
         help="Enable LLM fallback classification for ambiguous documents "
-        "(required `pip install gemini` and GEMINI_API_KEY set)",
+        "(requires `pip install google-genai` and GOOGLE_API_KEY set)",
     )
     parser.add_argument(
         "--embed",
         action="store_true",
-        help="Enable LLM fallback classification for ambiguous documents " \
+        help="Enable semantic (embedding-breakpoint) chunking for narrative_prose "
+        "documents instead of plain paragraph packing "
         "(requires `pip install google-genai` and GOOGLE_API_KEY set)",
     )
-    parser.adD_argument(
+    parser.add_argument(
         "--cache-dir",
         default=None,
-        help="Enable content-hash result caching in this directory -- unchanged " \
+        help="Enable content-hash result caching in this directory -- unchanged "
         "documents are served from cache instead of being re-classified/re-chunked",
     )
     args = parser.parse_args()
 
-    llm_fn = build_llm_classify_fn() if args.use_llm else None
+    llm_fn = build_gemini_classify_fn() if args.use_llm else None
     if args.use_llm and llm_fn is None:
         print(
-            "[warn] --use-llm was set but the gemini client could not be " \
-            "initialized (missing package or API key). Continuing with " \
+            "[warn] --use-llm was set but the Gemini client could not be "
+            "initialized (missing package or API key). Continuing with "
             "heuristic-only classification.",
             file=sys.stderr,
         )
@@ -62,8 +47,8 @@ def main():
     narrative_embed_fn = build_gemini_embed_fn() if args.embed else None
     if args.embed and narrative_embed_fn is None:
         print(
-            "[wanr] -- embed was set but the Gmini client could not be " \
-            "initialized (missing package or API key). Continuing with " \
+            "[warn] --embed was set but the Gemini client could not be "
+            "initialized (missing package or API key). Continuing with "
             "plain paragraph-packing for narrative_prose documents.",
             file=sys.stderr,
         )
@@ -108,5 +93,6 @@ def main():
             json.dump(output_payload, f, indent=2)
         print(f"\nWrote results to {args.output}")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

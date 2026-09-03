@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from typing import List, Tuple
 
-from typing import Chunk
+from ..types import Chunk
 from .base import VectorStore
 
 def _cosine(a: List[float], b: List[float]) -> float:
