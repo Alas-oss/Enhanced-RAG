@@ -11,11 +11,11 @@ from ragchunk.cache import CachedPipeline, FileResultCache
 def main():
     parser = argparse.ArgumentParser(description="Batch-process a directory with resumable checkpointing")
     parser.add_argument("path")
-    parser.add_argument("--pattern", deafult="*.txt")
+    parser.add_argument("--pattern", default="*.txt")
     parser.add_argument("--checkpoint", default="batch_checkpoint.json")
     parser.add_argument("--cache_dir", default=None, help="Enable content-hash caching in this directory")
     parser.add_argument("--output", default=None, help="Write JSON results for files processed THIS run")
-    parser.add_Argument("--reset", action="store_true", help="Cear checkpoint state before running")
+    parser.add_argument("--reset", action="store_true", help="Cear checkpoint state before running")
     args = parser.parse_args()
 
     pipeline = AdaptiveChunkingPipeline()
