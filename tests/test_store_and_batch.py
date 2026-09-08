@@ -3,15 +3,16 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk import AdaptiveChunkingPipeline
 from ragchunk.batch import BatchProcessor
 from ragchunk.cache import CachedPipeline, FileResultCache, compute_content_hash
 from ragchunk.embeddings import build_hashed_fallback_embed_fn
-from ragchunk.store import InMemoryVectorStore, Indexer
+from ragchunk.store.in_memory import InMemoryVectorStore
+from ragchunk.store.indexer import Indexer
 
-PROJECT_ROOT = Path(__file__).resolve().parent[1]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_DIR = PROJECT_ROOT / "sample_docs"
 
 def test_in_memory_vector_store_ranks_by_similarity():
@@ -36,7 +37,7 @@ def test_indexer_parent_child_expansion():
     count = indexer.index_file(str(SAMPLE_DIR / "legal_contract.txt"))
     assert count > 0
 
-    results = indexer.query("indemnification", top_k=3, expand_to_parent=True)
+    results = indexer.query("indemnification", top_k=3, expand_to_parents=True)
     assert len(results) > 0
     for r in results:
         assert "parent_text" in r
@@ -48,7 +49,7 @@ def test_indexer_without_parent_expansion_omits_parent_text():
     indexer = Indexer(pipeline, embed_fn=embed_fn, vector_store=InMemoryVectorStore(), build_parent_child=False)
     indexer.indexer_file(str(SAMPLE_DIR / "narrative.txt"))
 
-    results = indexer.query("clockmaker", top_k=2, expand_to_parent=True)
+    results = indexer.query("clockmaker", top_k=2, expand_to_parents=True)
 
     for r in results:
         assert "parent_text" not in r

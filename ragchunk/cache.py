@@ -13,7 +13,7 @@ from .utils import normalize_whitespace
 
 def compute_content_hash(text: str) -> str:
     normalized = normalize_whitespace(text)
-    return hashlib.sha256(normalized.encode("utf-8")).hexadigest()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 def _chunk_to_dict(chunk: Chunk) -> Dict[str, Any]:
     return chunk.to_dict()
@@ -26,7 +26,7 @@ def _chunk_from_dict(d: Dict[str, Any]) -> Chunk:
         doc_type=d["doc_type"],
         section_path=d.get("section_path"),
         chunk_index=d.get("chunk_index", 0),
-        token_index=d.get("token_index", 0),
+        token_estimate=d.get("token_estimate", 0),
         extra_metadata=d.get("metadata", {}),
     )
 
@@ -69,8 +69,31 @@ class FileResultCache(ResultCache):
             return None
 
     def set(self, content_hash: str, result: PipelineResult) -> None:
-        data = _pipeline_result_from_dict(result)
-        self._path_for(content_hash).write_text(json.dumpr(data, indent=2), encoding="utf-8")
+        # Convert the PipelineResult object fields explicitly into a serializable dictionary
+        data = {
+            "doc_id": result.doc_id,
+            "doc_type": result.doc_type.value if hasattr(result.doc_type, "value") else result.doc_type,
+            "classification": {
+                "confidence": result.classification.confidence,
+                "method": result.classification.method
+            },
+            "chunks": [
+                {
+                    "text": chunk.text,
+                    "chunk_id": chunk.chunk_id,
+                    "doc_id": chunk.doc_id,
+                    "doc_type": chunk.doc_type.value if hasattr(chunk.doc_type, "value") else chunk.doc_type,
+                    "section_path": chunk.section_path,
+                    "chunk_index": chunk.chunk_index,
+                    "token_estimate": chunk.token_estimate,
+                    "metadata": chunk.extra_metadata
+                }
+                for chunk in result.chunks
+            ]
+        }
+        # Serialize and write to cache file using json.dumps
+        self._path_for(content_hash).write_text(json.dumps(data, indent=2), encoding="utf-8")
+
 
 class CachedPipeline:
     def __init__(self, pipeline: AdaptiveChunkingPipeline, cache: ResultCache):
@@ -83,7 +106,7 @@ class CachedPipeline:
         if cached is not None:
             return cached
 
-        result = self.pipeline.procesS_text(text, doc_id=doc_id, source_path=source_path)
+        result = self.pipeline.process_text(text, doc_id=doc_id, source_path=source_path)
         self.cache.set(content_hash, result)
         return result
 

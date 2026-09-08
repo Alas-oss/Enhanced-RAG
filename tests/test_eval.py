@@ -1,14 +1,14 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk.eval.calibration import recommend_thresholds, run_calibration_sweep
 from ragchunk.eval.classifier_eval import run_classifier_eval
 from ragchunk.eval.dataset import load_labeled_dataset, load_qa_dataset
 from ragchunk.eval.retrieval_eval import run_retrieval_eval
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LABELED_DATASET_PATH = PROJECT_ROOT / "eval_data" / "labeled_dataset.json"
 QA_DATASET_PATH = PROJECT_ROOT / "eval_data" / "qa_dataset.json"
 

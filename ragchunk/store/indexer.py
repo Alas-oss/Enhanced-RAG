@@ -10,14 +10,14 @@ from .in_memory import InMemoryVectorStore
 
 EmbedFn = Any
 
-class Indexer:
+class Indexer: 
     def __init__(
         self,
         pipeline: AdaptiveChunkingPipeline,
         embed_fn: EmbedFn,
         vector_store: Optional[VectorStore] = None,
         build_parent_child: bool = True,
-    ):
+        ): 
         self.pipeline = pipeline
         self.embed_fn = embed_fn
         self.vector_store = vector_store or InMemoryVectorStore()
@@ -35,6 +35,7 @@ class Indexer:
         for file_path in sorted(Path(dir_path).glob(pattern)):
             total += self.index_file(str(file_path))
         return total
+
     def index_chunks(self, chunks: List[Chunk]) -> int:
         if not chunks:
             return 0
@@ -44,7 +45,9 @@ class Indexer:
 
         texts = [c.text for c in chunks]
         embeddings = self.embed_fn(texts)
-        self.vector_store.add(chunks, embeddings)
+        
+        # FIXED: Pass explicitly as keyword arguments matching InMemoryVectorStore.add
+        self.vector_store.add(chunks=chunks, embeddings=embeddings)
         return len(chunks)
 
     def query(self, text: str, top_k: int = 5, expand_to_parents: bool = True) -> List[Dict[str, Any]]:
@@ -57,12 +60,12 @@ class Indexer:
             if expand_to_parents and self.build_parent_child:
                 parent_id = self._child_to_parent.get(chunk.chunk_id)
                 entry["parent_id"] = parent_id
-                entry["parents_text"] = self._parent_texts.get(parent_id, chunk.text)
+                entry["parent_text"] = self._parent_texts.get(parent_id, chunk.text)
             output.append(entry)
         return output
 
     def _register_parent_child(self, chunks: List[Chunk]) -> None:
-        groups: Dict[tuple[str, Optional[str]], List[Chunk]] = {}
+        groups: Dict[Tuple[str, Optional[str]], List[Chunk]] = {}
         for c in chunks:
             key = (c.doc_id, c.section_path)
             groups.setdefault(key, []).append(c)
@@ -73,3 +76,7 @@ class Indexer:
             self._parent_texts[parent_id] = "\n\n".join(c.text for c in ordered)
             for c in ordered:
                 self._child_to_parent[c.chunk_id] = parent_id
+
+    @property
+    def indexer_file(self) -> Any:
+        return self.index_file

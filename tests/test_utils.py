@@ -1,12 +1,12 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk.loaders import load_document
 from ragchunk.utils import estimate_tokens
 
-SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_docs"
+SAMPLE_DIR = Path(__file__).resolve().parent.parent / "sample_docs"
 
 
 def test_estimate_tokens_returns_positive_int():

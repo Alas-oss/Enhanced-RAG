@@ -5,7 +5,9 @@ import sys
 
 from ragchunk import AdaptiveChunkingPipeline
 from ragchunk.embeddings import build_gemini_embed_fn, build_hashed_fallback_embed_fn
-from ragchunk.store import ChromaVectorStore, InMemoryVectorStore, Indexer
+from ragchunk.store.chroma_store import ChromaVectorStore
+from ragchunk.store.in_memory import InMemoryVectorStore
+from ragchunk.store.indexer import Indexer
 
 def main():
     parser = argparse.ArgumentParser(description="Index documents into a vector store and query them")
@@ -49,7 +51,7 @@ def main():
     print(f"Indexed {count} chunks.")
 
     if args.query:
-        results = indexer.query(args.query, top_k=args.top_k, expand_to_parent=not args.no_parent_expansion)
+        results = indexer.query(args.query, top_k=args.top_k, expand_to_parents=not args.no_parent_expansion)
         print(f'\nTop {len(results)} results for: "{args.query}"\n')
         for i, r in enumerate(results, start=1):
             chunk = r["chunk"]

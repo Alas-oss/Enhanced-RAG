@@ -1,11 +1,11 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk import AdaptiveChunkingPipeline, DocType
 
-SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_docs"
+SAMPLE_DIR = Path(__file__).resolve().parent.parent / "sample_docs"
 
 
 def test_legal_contract_chunks_have_section_paths():
@@ -74,15 +74,12 @@ def test_financial_report_extracts_tables_atomically():
 
     assert result.doc_type == DocType.FINANCIAL_REPORT
     table_chunks = [c for c in result.chunks if c.extra_metadata.get("content_type") == "table"]
-    assert len(table_chunks) >= 2  # two tables in the sample doc
+    assert len(table_chunks) >= 2 
     for c in table_chunks:
         assert c.text.strip().startswith("|")
 
 
 def test_mixed_document_produces_multiple_doc_types():
-    """The sample doc mixes a government regulation section with a
-    technical API appendix -- section-level classification should detect
-    both types within the same PipelineResult."""
     pipeline = AdaptiveChunkingPipeline()
     result = pipeline.process_file(str(SAMPLE_DIR / "mixed_gov_technical.txt"))
 

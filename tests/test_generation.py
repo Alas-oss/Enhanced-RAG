@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk import AdaptiveChunkingPipeline
 from ragchunk.embeddings import build_hashed_fallback_embed_fn
@@ -9,7 +9,7 @@ from ragchunk.generation import generate_answer
 from ragchunk.store.in_memory import InMemoryVectorStore
 from ragchunk.store.indexer import Indexer 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 SAMPLE_DIR = PROJECT_ROOT / "sample_docs"
 
 def _fake_retrieved(n=2):

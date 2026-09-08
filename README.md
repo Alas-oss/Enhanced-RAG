@@ -4,7 +4,7 @@ A classification-driven chunking pipeline for retrieval-augmented generation. Ev
 
 ## Purpose of this project
 
-Most RAG pipelines chunk every document the same way, a fixed token count with some overlap 0 regardless of what the document actually is. That works poorly the moment the corpus isn't uniform:
+Most RAG pipelines chunk every document the same way, a fixed token count with some overlap regardless of what the document actually is. That works poorly the moment the corpus isn't uniform:
 
 - **A legal contract split mid-clause loses its meaning.** 
 - **A government regulation needs precision, not breadth.**

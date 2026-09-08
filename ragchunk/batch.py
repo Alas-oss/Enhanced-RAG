@@ -46,7 +46,7 @@ class BatchProcessor:
 
         for file_path in files:
             key = str(file_path)
-            if self.checkpoint_path.get(key, {}).get("status") == "done":
+            if self.checkpoint.get(key, {}).get("status") == "done":
                 skipped += 1
                 continue
 

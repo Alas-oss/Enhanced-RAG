@@ -1,13 +1,13 @@
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from ragchunk.classifier import heuristic_classify
 from ragchunk.types import DocType
 from ragchunk.utils import load_text_file
 
-SAMPLE_DIR = Path(__file__).resolve().parents[1] / "sample_docs"
+SAMPLE_DIR = Path(__file__).resolve().parent.parent / "sample_docs"
 
 
 def test_legal_contract_classified_correctly():

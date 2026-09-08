@@ -7,7 +7,7 @@ from ..types import Chunk
 
 class VectorStore(ABC):
     @abstractmethod
-    def add(Self, chunks: List[Chunk], embeddings: List[List[float]]) -> None:
+    def add(self, chunks: List[Chunk], embeddings: List[List[float]]) -> None:
         raise NotImplementedError
 
     @abstractmethod

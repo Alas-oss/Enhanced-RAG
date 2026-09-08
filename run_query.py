@@ -8,7 +8,9 @@ from ragchunk import AdaptiveChunkingPipeline
 from ragchunk.embeddings import build_gemini_embed_fn
 from ragchunk.generation import generate_answer
 from ragchunk.llm import build_gemini_generate_fn
-from ragchunk.store import ChromaVectorStore, InMemoryVectorStore, Indexer
+from ragchunk.store.chroma_store import ChromaVectorStore
+from ragchunk.store.in_memory import InMemoryVectorStore
+from ragchunk.store.indexer import Indexer
 
 def main():
     parser = argparse.ArgumentParser(
@@ -58,7 +60,7 @@ def main():
         count = indexer.index_file(args.path)
         print(f"Indexed {count} chunks.\n")
 
-        retrieved = indexer.query(args.ask, top_k=args.top_k, expand_to_parent=not args.no_parent_expansion)
+        retrieved = indexer.query(args.ask, top_k=args.top_k, expand_to_parents=not args.no_parent_expansion)
         result = generate_answer(args.ask, retrieved, generate_fn)
 
         print(f"Q: {result.question}\n")
