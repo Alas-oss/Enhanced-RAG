@@ -4,7 +4,7 @@ A classification-driven chunking pipeline for retrieval-augmented generation. Ev
 
 ## Purpose of this project
 
-Most RAG pipelines chunk every document the same way, a fixed token count with some overlap regardless of what the document actually is. That works poorly the moment the corpus isn't uniform:
+Most RAG pipelines chunk every document the same way; a fixed token count with some overlap regardless of what the document actually is. That works poorly the moment the corpus isn't uniform:
 
 - **A legal contract split mid-clause loses its meaning.** 
 - **A government regulation needs precision, not breadth.**
@@ -12,7 +12,7 @@ Most RAG pipelines chunk every document the same way, a fixed token count with s
 - **A financial table split across chunk boundaries loses its functionality of a data-carrying table.**
 - **In standard practice, nobody will be routing per-document or per-section.**
 
-This pipeline addresses this with one classify-then-route flow, rather than hand-picking a chunking strategy per source file.
+This pipeline addresses this with one classify-then-route flow, rather than hand-picking a chunking strategy per-source file.
 
 ## Architecture
 
@@ -24,7 +24,7 @@ This pipeline addresses this with one classify-then-route flow, rather than hand
  │                 Adaptive Chunking Pipeline                    │
  │                                                               │
  │  1. Load & normalize              (ragchunk/loaders.py)       │
- │  2. Coarse section pre-split       (ragchunk/section_splitter)│
+ │  2. Coarse section pre-split    (ragchunk/section_splitter.py)│
  │  3. Per-section classification      (ragchunk/classifier.py)  │
  │       heuristic scoring first, LLM fallback only if ambiguous │
  │  4. Same-type section merging        (ragchunk/pipeline.py)   │
@@ -42,7 +42,7 @@ Every stage is independently testable; `main.py` wires them together into one CL
 
 ### Hybrid classification
 
-Every document it scored against a set of regex/keyword heuristics for each known type (`ragchunk/classifier.py`) - which is fast, free, deterministic and does not require a network call. A document only escalates to an LLM classification call when the heuristic result is genuinely ambiguous: low confidence, or too close a race between the top two candidate types. This keeps LLM spend proportional to the hard cases instead of paying for a classification call on every document. The LLM step is adjustable, you can pass any `Callable [[str], str]` into `HybridClassifier`, without touching classification logic itself.
+Every document is scored against a set of regex/keyword heuristics for each known type (`ragchunk/classifier.py`) - which is: fast, free, deterministic and does not require a network call. A document only escalates to an LLM classification call when the heuristic result is genuinely ambiguous: low confidence, or too close a race between the top two candidate types. This keeps LLM spend proportional to the hard cases instead of paying for a classification call on every document. The LLM step is adjustable, since you can pass any `Callable [[str], str]` into `HybridClassifier`, without touching classification logic itself.
 
 ### Section-level, not just document-level, classification
 
@@ -73,7 +73,7 @@ Every chunk carries `doc_type`, `section_path` (e.g. a full Title/Path/Subpart t
 
 ### Evaluation harness
 
-`run_eval.py` runs the pipeline against two labeled datasets in `eval_data/` and reports three things: **classifier accuracy** (precision/recall/F1 per document type, run through the full pipeline rather than the classifier in isolation, so section-level classification bugs get caught too), **retrieval quality** (a dependency-free TF-IDF retriever check whether the chunk actually containing the answer to a sample question shows up in the top-k results, and this catches a different failure mode than classification correctness: a document can be typed correctly and still chunked in a way that separates a question from its answer), and **threshold calibration** (sweeps `HybridClassifier`'s confidence/margin thresholds and recommends the most cost-efficient setting that doesn't sacrifice accuracy on the labeled set). All three write to a single JSON report via `--output`.
+`run_eval.py` runs the pipeline against two labeled datasets in `eval_data/` and reports three things: **classifier accuracy** (precision/recall/F1 per-document type, run through the full pipeline rather than the classifier in isolation, so section-level classification bugs get caught too), **retrieval quality** (a dependency-free TF-IDF retriever check whether the chunk actually containing the answer to a sample question shows up in the top-k results, and this catches a different failure mode than classification correctness: a document can be typed correctly and still chunked in a way that separates a question from its answer), and **threshold calibration** (sweeps `HybridClassifier`'s confidence/margin thresholds and recommends the most cost-efficient setting that doesn't sacrifice accuracy on the labeled set). All three write to a single JSON report via `--output`.
 
 ### Vector store integration and parent-child retrieval
 
@@ -81,7 +81,7 @@ Every chunk carries `doc_type`, `section_path` (e.g. a full Title/Path/Subpart t
 
 ### Caching and batch processing
 
-`ragchunk/cache.py` adds a content-hash-keyed cache (`CachedPipeline`) that wraps `AdaptiveChunkingPipeline` transparently, re-running the pipeline on unchanged document content skips classification and chunking entirely and returns the cached result, keyed by content rather than filename, so a renamed file with identical content still hits the cache. `ragchunk/batch.py` adds `BatchProcessor`, which processes a whole directory with resumablecheckpoint: prgress is saved after every single file, so an interrupsted batch job over a large corpus resumes from where it stopped instead or restarting. The two compose naturally using `run_batch.py --cache-dir` gets you both file-level checkpoint skipping and content-level cache hits in one run.
+`ragchunk/cache.py` adds a content-hash-keyed cache (`CachedPipeline`) that wraps `AdaptiveChunkingPipeline` transparently, re-running the pipeline on unchanged document content skips classification and chunking entirely and returns the cached result, keyed by content rather than filename, so a renamed file with identical content still hits the cache. `ragchunk/batch.py` adds `BatchProcessor`, which processes a whole directory with resumablecheckpoint: progress is saved after every single file, so an interrupted batch job over a large corpus resumes from where it stopped instead of restarting. The two compose naturally using `run_batch.py --cache-dir` gets you both file-level checkpoint skipping and content-level cache hits in one run.
 
 ## Project strcture
 
@@ -119,7 +119,7 @@ ragchunk/
   batch.py                 Resumable checkpointed batch processing
   embeddings.py             Reference embed_fn implementations (Gemini + local fallback)
 eval_data/               Labeled dataset and QA dataset (plain JSON)
-sample_docs/            One example per document type, including a mixed-type sample
+sample_docs/            One example per-document type, including a mixed-type sample
 tests/                  Classifier, pipeline, utility, eval, and store/batch test suites
 main.py                 Command-line entry point
 run_eval.py              Evaluation harness entry point

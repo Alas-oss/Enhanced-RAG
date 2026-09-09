@@ -31,7 +31,7 @@ def _load_pdf(path: Path) -> str:
         pages.append(f"\n\n[Page {i + 1}]\n{text}")
     return "".join(pages).strip()
 
-def _load_docs(path: Path) -> str:
+def _load_docx(path: Path) -> str:
     try: 
         import docx
     except ImportError as exc:

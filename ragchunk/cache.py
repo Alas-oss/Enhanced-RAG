@@ -69,7 +69,6 @@ class FileResultCache(ResultCache):
             return None
 
     def set(self, content_hash: str, result: PipelineResult) -> None:
-        # Convert the PipelineResult object fields explicitly into a serializable dictionary
         data = {
             "doc_id": result.doc_id,
             "doc_type": result.doc_type.value if hasattr(result.doc_type, "value") else result.doc_type,
@@ -91,7 +90,6 @@ class FileResultCache(ResultCache):
                 for chunk in result.chunks
             ]
         }
-        # Serialize and write to cache file using json.dumps
         self._path_for(content_hash).write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
