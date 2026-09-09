@@ -40,7 +40,7 @@ class AdaptiveChunkingPipeline:
 
         if len(groups) == 1:
             _, group_text, group_classification = groups[0]
-            return self._chunk_with_classificaiton(group_text, group_classification, doc_id, source_path)
+            return self._chunk_with_classification(group_text, group_classification, doc_id, source_path)
 
         return self._chunk_mixed_groups(groups, doc_id, source_path)
 
@@ -59,7 +59,7 @@ class AdaptiveChunkingPipeline:
         classification = self.classifier.classify(text)
         return self._chunk_with_classification(text, classification, doc_id, source_path)
 
-    def _chunk_with_classificaiton(
+    def _chunk_with_classification(
             self, text: str, classification: ClassificationResult, doc_id: str, source_path: Optional[str]
     ) -> PipelineResult:
         document = Document(doc_id=doc_id, text=text, source_path=source_path)

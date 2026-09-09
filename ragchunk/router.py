@@ -21,8 +21,7 @@ class ChunkerRouter:
             DocType.LEGAL_CONTRACT: LegalContractChunker(max_tokens=300, overlap_tokens=50),
             DocType.GOVERNMENT_REGULATION: GovernmentRegulationChunker(max_tokens=250, overlap_tokens=30),
             DocType.TECHNICAL_MANUAL: TechnicalManualChunker(max_tokens=500, overlap_tokens=50),
-            DocType.NARRATIVE_PROSE: NarrativeProseChunker(
-                max_tokens=600, overlap_tokens=60, embed_fn=narrative_embed_fn),
+            DocType.NARRATIVE_PROSE: NarrativeProseChunker(max_tokens=600, overlap_tokens=60, embed_fn=narrative_embed_fn),
             DocType.FINANCIAL_REPORT: FinancialReportChunker(max_tokens=400, overlap_tokens=50),
             DocType.DEFAULT: DefaultChunker(max_tokens=500, overlap_tokens=50),
         }

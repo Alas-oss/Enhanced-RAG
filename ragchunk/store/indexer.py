@@ -46,7 +46,6 @@ class Indexer:
         texts = [c.text for c in chunks]
         embeddings = self.embed_fn(texts)
         
-        # FIXED: Pass explicitly as keyword arguments matching InMemoryVectorStore.add
         self.vector_store.add(chunks=chunks, embeddings=embeddings)
         return len(chunks)
 

@@ -10,7 +10,7 @@ def build_gemini_embed_fn() -> Optional[Callable[[List[str]], List[List[float]]]
         client = genai.Client()
 
         def embed_fn(texts: List[str]) -> List[List[float]]:
-            result = client.models.embed_content(model="text-embedding-004", contents=texts)
+            result = client.models.embed_content(model="gemini-embedding-001", contents=texts)
             return [e.values for e in result.embeddings]
 
         return embed_fn

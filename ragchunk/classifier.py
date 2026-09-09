@@ -37,7 +37,7 @@ HEURISTIC_RULES: Dict[DocType, List[Tuple[str, float]]] = {
         (r"\bAPI\b", 1.5),
         (r"\bfunction\s+\w+\s*\(", 2.0),
         (r"\bparameters?:\s*$", 1.5),
-        (r"^\s*#{1,4}\s+\S", 2.0),  # markdown headings
+        (r"^\s*#{1,4}\s+\S", 2.0),  
         (r"\breturns?:\s*$", 1.0),
         (r"\binstall(ation)?\b", 1.0),
         (r"\bconfig(uration)?\b", 1.0),
@@ -52,7 +52,7 @@ HEURISTIC_RULES: Dict[DocType, List[Tuple[str, float]]] = {
         (r"\bcash flow\b", 2.0),
     ],
     DocType.NARRATIVE_PROSE: [
-        (r'"[A-Z][^"]{10,}"', 1.0),  # quoted dialogue
+        (r'"[A-Z][^"]{10,}"', 1.0), 
         (r"\bchapter \d+\b", 2.5),
         (r"\bonce upon a time\b", 3.0),
         (r"\bhe said\b|\bshe said\b", 1.5),

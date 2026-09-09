@@ -39,15 +39,18 @@ def split_into_sections(text: str) -> List[Tuple[Optional[str], str]]:
     return _merge_short_sections(raw_sections)
 
 def _merge_short_sections(sections: List[Tuple[Optional[str], str]]) -> List[Tuple[Optional[str], str]]:
-    section = list(sections)
+    sections = list(sections)  
     merged: List[Tuple[Optional[str], str]] = []
     i = 0
     while i < len(sections):
         label, sec_text = sections[i]
         if len(sec_text.strip()) < MIN_SECTION_CHARS:
             if merged:
-                prev_label, next_text = merged[-1]
-                merged[-1] = (prev_label, sec_text + next_text)
+                prev_label, prev_text = merged[-1]
+                merged[-1] = (prev_label, prev_text + sec_text)
+            elif i + 1 < len(sections):
+                next_label, next_text = sections[i + 1]
+                sections[i + 1] = (next_label, sec_text + next_text)
             else:
                 merged.append((label, sec_text))
         else:

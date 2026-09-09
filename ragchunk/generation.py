@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 CITATION_MARKER_PATTERN = re.compile(r"\[(\d+)\]")
 
-GENERATION_PROMPT_TEMPLATE = """Answer the question using ONLY the information in the sources below. If the source odesn't contain enough information to answer, say so directly rather than guessing or using outside knowledge.
+GENERATION_PROMPT_TEMPLATE = """Answer the question using ONLY the information in the sources below. If the source doesn't contain enough information to answer, say so directly rather than guessing or using outside knowledge.
 
 Cite every claim using the bracketed source number it came from, e.g. [1] or [2][3]. Every sentence that states a fact from the sources should have at least one citation.
 

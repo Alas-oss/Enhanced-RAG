@@ -10,12 +10,14 @@ from ..utils import estimate_tokens
 PARAGRAPH_SPLIT = re.compile(r"\n\s*\n")
 SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
 
+
 class DefaultChunker(BaseChunker):
+
     doc_type_label = "default"
 
     def split(self, document: Document) -> List[dict]:
         text = document.text
-        paragraphs = [p.split() for p in PARAGRAPH_SPLIT.split(text) if p.strip()]
+        paragraphs = [p.strip() for p in PARAGRAPH_SPLIT.split(text) if p.strip()]
 
         pieces = []
         buffer = []
@@ -43,8 +45,8 @@ class DefaultChunker(BaseChunker):
 
         return pieces
 
-    def _sentence_chunks(self, paragarph: str) -> List[dict]:
-        sentences = SENTENCE_SPLIT.split(paragarph)
+    def _sentence_chunks(self, paragraph: str) -> List[dict]:
+        sentences = SENTENCE_SPLIT.split(paragraph)
         pieces = []
         buffer = []
         buffer_tokens = 0
